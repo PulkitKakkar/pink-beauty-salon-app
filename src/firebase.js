@@ -1,17 +1,15 @@
-// src/firebase.js
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBlNn6VfJeN_Z51ne2aNSRxG-mN589IAsg",
-    authDomain: "pink-beauty-salon.firebaseapp.com",
-    projectId: "pink-beauty-salon",
-    storageBucket: "pink-beauty-salon.firebasestorage.app",
-    messagingSenderId: "25328599127",
-    appId: "1:25328599127:web:fc435ed693934be7d56312",
-    measurementId: "G-PTH859G7DW"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
