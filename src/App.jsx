@@ -10,6 +10,9 @@ import ConsultationForm from "./pages/ConsultationForm";
 import AdminRoute from "./components/AdminRoute";
 import Disclaimer from "./pages/Disclaimer";
 import { Toaster } from 'react-hot-toast';
+import AdminDashboard from "./pages/AdminDashboard";
+import CustomersList from "./pages/CustomersList"; // placeholder
+import CalendarPage from "./pages/CalendarPage"; // placeholder
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,15 +41,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route
-          path="/consultation"
-          element={
-            <AdminRoute role={role}>
-              <ConsultationForm />
-            </AdminRoute>
-          }
-        />
         <Route path="/disclaimer" element={<Disclaimer />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/customers" element={<CustomersList />} /> {/* placeholder */}
+        <Route path="/consultation" element={<ConsultationForm />} />
+        <Route path="/calendar" element={<CalendarPage />} /> {/* placeholder */}
       </Routes>
       <Toaster position="top-right" />
     </>

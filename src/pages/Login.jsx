@@ -31,7 +31,7 @@ export default function Login() {
 
         // 3️⃣ Redirect based on role
         if (role === "admin") {
-          navigate("/consultation");
+          navigate("/admin");
         } else if (role === "staff") {
           navigate("/dashboard");
         } else {

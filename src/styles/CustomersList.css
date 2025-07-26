@@ -1,0 +1,51 @@
+.customer-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 4px 10px rgba(214, 51, 132, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.customer-table th,
+.customer-table td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+/* 🎯 MOBILE FIX: turn table into card layout */
+@media (max-width: 600px) {
+  .customer-table,
+  .customer-table thead,
+  .customer-table tbody,
+  .customer-table th,
+  .customer-table td,
+  .customer-table tr {
+    display: block;
+  }
+
+  .customer-table thead {
+    display: none; /* hide headers on mobile */
+  }
+
+  .customer-table tr {
+    background: #fff;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 12px;
+  }
+
+  .customer-table td {
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+
+  .customer-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #d63384;
+  }
+}
