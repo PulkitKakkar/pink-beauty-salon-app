@@ -1,8 +1,13 @@
 import { useRef, useState } from "react";
-import SignaturePad from "react-signature-canvas";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import ClientDetailsSection from "../components/ClientDetailsSection";
+import MedicalBackgroundSection from "../components/MedicalBackgroundSection";
+import TreatmentHistorySection from "../components/TreatmentHistorySection";
+import SkinTypeAnalysisSection from "../components/SkinTypeAnalysisSection";
+import DisclaimerSection from "../components/DisclaimerSection";
+import SignatureSection from "../components/SignatureSection";
 
 const skinQuestions = [
   {
@@ -179,25 +184,84 @@ export default function ConsultationForm() {
     setSignatureURL(sigPad.current.getTrimmedCanvas().toDataURL("image/png"));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [formErrors, setFormErrors] = useState({});
 
-    if (!form.disclaimerAccepted) {
-      alert("⚠️ Please accept the disclaimer before submitting.");
-      return;
-    }
+ const handleSubmit = async (e) => {
+   e.preventDefault();
 
-    await addDoc(collection(db, "consultations"), {
-      ...form,
-      signature: signatureURL,
-      createdAt: new Date(),
-    });
+   // ✅ Clear previous errors
+   setFormErrors({});
 
-    alert("✅ Consultation Form Saved!");
-    setForm({});
-    setSignatureURL("");
-    sigPad.current.clear();
-  };
+   let errors = {};
+
+   // ✅ Inline validation for disclaimer
+   if (!form.disclaimerAccepted) {
+     errors.disclaimerAccepted =
+       "Please accept the disclaimer before submitting.";
+   }
+
+   // ✅ Inline validation for required fields (you can add more)
+   if (!form.clientName) errors.clientName = "Client name is required.";
+   if (!form.phone) errors.phone = "Phone number is required.";
+
+   // ✅ If errors exist, stop submission
+   if (Object.keys(errors).length > 0) {
+     setFormErrors(errors);
+     toast.error("Please fix the highlighted errors.");
+     return;
+   }
+
+   try {
+     await addDoc(collection(db, "consultations"), {
+       ...form,
+       signature: signatureURL,
+       createdAt: new Date(),
+     });
+
+     toast.success("✅ Consultation Form Saved!");
+
+     // ✅ Reset form (after successful save)
+     setForm({
+       date: new Date().toISOString().split("T")[0],
+       clientName: "",
+       dob: "",
+       address: "",
+       occupation: "",
+       homeTelephone: "",
+       mobile: "",
+       hearAboutUs: "",
+       areasToBeTreated: "",
+       phone: "",
+       email: "",
+       doctorCare: "",
+       doctorCareForWhat: "",
+       hormoneMedication: "",
+       hormoneMedicationDetails: "",
+       allMedications: "",
+       medications: "",
+       surgery: "",
+       surgeryExplain: "",
+       sensitiveSoaps: "",
+       skinIrritated: "",
+       sunExposure6Weeks: "",
+       waxedAreasMonth: "",
+       allergies: "",
+       tanning: "",
+       tattoos: "",
+       pregnant: "",
+       treatments: "",
+       skinTypeScore: "",
+       disclaimerAccepted: false,
+     });
+     setSkinAnswers({});
+     setSkinScore(0);
+     setSignatureURL("");
+     sigPad.current.clear();
+   } catch (error) {
+     toast.error("❌ Something went wrong while saving.");
+     console.error(error);
+   }
+ };
 
   const handleSkinAnswer = (question, score) => {
     setSkinAnswers((prev) => {
@@ -241,589 +305,44 @@ export default function ConsultationForm() {
       </h2>
 
       <form onSubmit={handleSubmit}>
-        {/* SECTION 1: Client Details */}
-        <h3 style={{ color: "#c02675" }}>Client Details</h3>
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="date">
-            Date
-          </label>
-          <input
-            type="date"
-            name="date"
-            id="date"
-            value={form.date}
-            readOnly
-            style={{
-              ...inputStyle,
-              backgroundColor: "#f4f4f4",
-              cursor: "not-allowed",
-            }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="clientName">
-            Client Name
-          </label>
-          <input
-            type="text"
-            name="clientName"
-            id="clientName"
-            value={form.clientName}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="dob">
-            Date of Birth
-          </label>
-          <input
-            type="date"
-            name="dob"
-            id="dob"
-            value={form.dob}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="address">
-            Address
-          </label>
-          <input
-            type="text"
-            name="address"
-            id="address"
-            value={form.address}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="phone">
-            Phone
-          </label>
-          <input
-            type="text"
-            name="phone"
-            id="phone"
-            value={form.phone}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="email">
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            value={form.email}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-        </div>
-
-        {/* SECTION 2: Medical Background */}
-        <h3 style={{ color: "#c02675", marginTop: "20px" }}>
-          Medical Background
-        </h3>
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="doctorCare">
-            Are you under a doctor's care?
-          </label>
-          <select
-            name="doctorCare"
-            id="doctorCare"
-            value={form.doctorCare}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="doctorCareForWhat">
-            If yes, for what?
-          </label>
-          <textarea
-            name="doctorCareForWhat"
-            id="doctorCareForWhat"
-            value={form.doctorCareForWhat}
-            onChange={handleChange}
-            style={{ ...inputStyle, minHeight: "48px", resize: "vertical" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="hormoneMedication">
-            Have you been treated with hormone medication?
-          </label>
-          <select
-            name="hormoneMedication"
-            id="hormoneMedication"
-            value={form.hormoneMedication}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="hormoneMedicationDetails">
-            If yes, indicate the specific hormone medication
-          </label>
-          <textarea
-            name="hormoneMedicationDetails"
-            id="hormoneMedicationDetails"
-            value={form.hormoneMedicationDetails}
-            onChange={handleChange}
-            style={{ ...inputStyle, minHeight: "48px", resize: "vertical" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="allMedications">
-            Please list any prescription and non-prescription medication you are
-            taking including anything topical or herbal
-          </label>
-          <textarea
-            name="allMedications"
-            id="allMedications"
-            value={form.allMedications}
-            onChange={handleChange}
-            style={{ ...inputStyle, minHeight: "60px", resize: "vertical" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="surgery">
-            Have you had any surgery in the last 6 months?
-          </label>
-          <select
-            name="surgery"
-            id="surgery"
-            value={form.surgery}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="surgeryExplain">
-            If yes, please explain
-          </label>
-          <textarea
-            name="surgeryExplain"
-            id="surgeryExplain"
-            value={form.surgeryExplain}
-            onChange={handleChange}
-            style={{ ...inputStyle, minHeight: "48px", resize: "vertical" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="sensitiveSoaps">
-            Are you sensitive to any soaps or lotions?
-          </label>
-          <select
-            name="sensitiveSoaps"
-            id="sensitiveSoaps"
-            value={form.sensitiveSoaps}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="skinIrritated">
-            Does your skin get blotchy, red or irritated easily?
-          </label>
-          <select
-            name="skinIrritated"
-            id="skinIrritated"
-            value={form.skinIrritated}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="sunExposure6Weeks">
-            Have you had significant sun exposure in the last 6 weeks?
-          </label>
-          <select
-            name="sunExposure6Weeks"
-            id="sunExposure6Weeks"
-            value={form.sunExposure6Weeks}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="waxedAreasMonth">
-            Have you waxed the areas to be treated within the last month?
-          </label>
-          <select
-            name="waxedAreasMonth"
-            id="waxedAreasMonth"
-            value={form.waxedAreasMonth}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="allergies">
-            Do you have any allergies?
-          </label>
-          <textarea
-            name="allergies"
-            id="allergies"
-            value={form.allergies}
-            onChange={handleChange}
-            style={{ ...inputStyle, minHeight: "60px", resize: "vertical" }}
-          />
-        </div>
-
-        {/* SECTION 3: Treatment History */}
-        <h3 style={{ color: "#c02675", marginTop: "20px" }}>
-          Treatment History
-        </h3>
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="treatments">
-            Have you had laser hair removal before?
-          </label>
-          <select
-            name="treatments"
-            id="treatments"
-            value={form.treatments}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="tanning">
-            Do you use sun beds or self-tanning products?
-          </label>
-          <select
-            name="tanning"
-            id="tanning"
-            value={form.tanning}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="tattoos">
-            Do you have tattoos or permanent makeup?
-          </label>
-          <select
-            name="tattoos"
-            id="tattoos"
-            value={form.tattoos}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="pregnant">
-            Are you pregnant or trying to conceive?
-          </label>
-          <select
-            name="pregnant"
-            id="pregnant"
-            value={form.pregnant}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="roaccutane">
-            Have you ever had Roaccutane?
-          </label>
-          <select
-            name="roaccutane"
-            id="roaccutane"
-            value={form.roaccutane || ""}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="otherCosmeticProcedure">
-            Any other cosmetic procedure?
-          </label>
-          <select
-            name="otherCosmeticProcedure"
-            id="otherCosmeticProcedure"
-            value={form.otherCosmeticProcedure || ""}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="otherCosmeticProcedureDetails">
-            If yes, please state
-          </label>
-          <textarea
-            name="otherCosmeticProcedureDetails"
-            id="otherCosmeticProcedureDetails"
-            value={form.otherCosmeticProcedureDetails || ""}
-            onChange={handleChange}
-            style={{ ...inputStyle, minHeight: "48px", resize: "vertical" }}
-          />
-        </div>
-
-        {/* SECTION: Have you ever experienced or been treated with/for the following? */}
-        <h4 style={{ color: "#c02675", marginTop: "20px", fontWeight: 600 }}>
-          Have you ever experienced or been treated with/for the following?
-        </h4>
-        {[
-          { key: "skinCancer", label: "Skin Cancer" },
-          { key: "highBloodPressure", label: "High Blood Pressure" },
-          { key: "polycysticOvaries", label: "Polycystic ovaries" },
-          { key: "coldSores", label: "Cold sores" },
-          { key: "haemophilia", label: "Haemophilia" },
-          { key: "menopause", label: "Menopause" },
-          { key: "epilepsy", label: "Epilepsy" },
-          { key: "keloid", label: "Keloid" },
-          { key: "antiInflammatoryDrugs", label: "Anti-inflammatory drugs" },
-          { key: "irregularPeriods", label: "Irregular periods" },
-          { key: "cancer", label: "Cancer" },
-          { key: "heartProblems", label: "Heart Problems" },
-          { key: "birthControlPill", label: "Birth control pill" },
-          { key: "diabetes", label: "Diabetes" },
-          { key: "antiCoagulant", label: "Anti coagulant" },
-          { key: "thyroid", label: "Thyroid" },
-          { key: "asprin", label: "Asprin" },
-        ].map((item) => (
-          <div style={{ marginBottom: "15px" }} key={item.key}>
-            <label style={labelStyle} htmlFor={item.key}>
-              {item.label}
-            </label>
-            <select
-              name={item.key}
-              id={item.key}
-              value={form[item.key] || ""}
-              onChange={handleChange}
-              style={inputStyle}
-            >
-              <option value="">Select</option>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-          </div>
-        ))}
-        <div style={{ marginBottom: "15px" }}>
-          <label style={labelStyle} htmlFor="medicalConditionDetails">
-            If yes, to any of the above, please explain and include dates
-          </label>
-          <textarea
-            name="medicalConditionDetails"
-            id="medicalConditionDetails"
-            value={form.medicalConditionDetails || ""}
-            onChange={handleChange}
-            style={{ ...inputStyle, minHeight: "60px", resize: "vertical" }}
-          />
-        </div>
-
-        {/* SECTION: Skin Type Analysis (Fitzpatrick) */}
-        <h3 style={{ color: "#c02675", marginTop: "20px" }}>
-          Skin Type Analysis
-        </h3>
-        <div
-          style={{
-            background: "#f8e1ec",
-            padding: "18px",
-            borderRadius: "10px",
-            marginBottom: "24px",
-          }}
-        >
-          {skinQuestions.map((q, idx) => (
-            <div key={q.question} style={{ marginBottom: "16px" }}>
-              <label
-                style={{
-                  fontWeight: "500",
-                  display: "block",
-                  marginBottom: "6px",
-                }}
-              >
-                {idx + 1}. {q.question}
-              </label>
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: "8px" }}
-              >
-                {q.options.map((opt, oidx) => (
-                  <label
-                    key={oidx}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                      fontWeight: "400",
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name={`skin_${idx}`}
-                      checked={skinAnswers[q.question] === opt.score}
-                      onChange={() => handleSkinAnswer(q.question, opt.score)}
-                    />
-                    {opt.label}
-                  </label>
-                ))}
-              </div>
-            </div>
-          ))}
-          <div
-            style={{ marginTop: "18px", fontWeight: "600", fontSize: "16px" }}
-          >
-            Total Score: <span style={{ color: "#d63384" }}>{skinScore}</span>
-            <br />
-            Fitzpatrick Type:{" "}
-            <span style={{ color: "#c02675" }}>
-              {getFitzpatrickType(skinScore)}
-            </span>
-          </div>
-        </div>
-
-        {/* SECTION 4: Disclaimer */}
-        <h3 style={{ color: "#c02675", marginTop: "20px" }}>Disclaimer</h3>
-        <p style={{ fontSize: "14px", color: "#555" }}>
-          Please read our full{" "}
-          <Link
-            to="/disclaimer"
-            style={{ color: "#d63384", textDecoration: "underline" }}
-          >
-            Disclaimer
-          </Link>{" "}
-          before proceeding. I understand and acknowledge that all information
-          provided is accurate to the best of my knowledge. I accept all
-          possible risks associated with treatment and have been given aftercare
-          instructions.
-        </p>
-        <label style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <input
-            type="checkbox"
-            name="disclaimerAccepted"
-            checked={form.disclaimerAccepted}
-            onChange={handleChange}
-          />
-          I accept the disclaimer
-        </label>
-
-        {/* SECTION 5: Digital Signature */}
-        <h3 style={{ color: "#c02675", marginTop: "20px" }}>
-          Digital Signature
-        </h3>
-        <SignaturePad
-          ref={sigPad}
-          penColor="#d63384"
-          canvasProps={{
-            style: {
-              width: "100%",
-              height: "150px",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              backgroundColor: "white",
-            },
-          }}
+        <ClientDetailsSection
+          form={form}
+          handleChange={handleChange}
+          inputStyle={inputStyle}
+          labelStyle={labelStyle}
+          formErrors={formErrors}
         />
-        <div style={{ marginTop: "10px", display: "flex", gap: "10px" }}>
-          <button
-            type="button"
-            onClick={clearSignature}
-            style={{
-              backgroundColor: "#ccc",
-              padding: "12px",
-              border: "none",
-              borderRadius: "6px",
-              width: "100%",
-              fontSize: "16px",
-            }}
-          >
-            Clear
-          </button>
-          <button
-            type="button"
-            onClick={saveSignature}
-            style={{
-              backgroundColor: "#d63384",
-              color: "white",
-              padding: "12px",
-              border: "none",
-              borderRadius: "6px",
-              width: "100%",
-              fontSize: "16px",
-            }}
-          >
-            Save Signature
-          </button>
-        </div>
-
+        <MedicalBackgroundSection
+          form={form}
+          handleChange={handleChange}
+          inputStyle={inputStyle}
+          labelStyle={labelStyle}
+          formErrors={formErrors}
+        />
+        <TreatmentHistorySection
+          form={form}
+          handleChange={handleChange}
+          inputStyle={inputStyle}
+          labelStyle={labelStyle}
+          formErrors={formErrors}
+        />
+        <SkinTypeAnalysisSection
+          skinQuestions={skinQuestions}
+          skinAnswers={skinAnswers}
+          handleSkinAnswer={handleSkinAnswer}
+          skinScore={skinScore}
+          getFitzpatrickType={getFitzpatrickType}
+        />
+        <DisclaimerSection
+          form={form}
+          handleChange={handleChange}
+          formErrors={formErrors}
+        />
+        <SignatureSection
+          sigPad={sigPad}
+          clearSignature={clearSignature}
+          saveSignature={saveSignature}
+        />
         {/* Submit Button */}
         <button
           type="submit"

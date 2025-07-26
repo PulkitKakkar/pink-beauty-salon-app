@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import ConsultationForm from "./pages/ConsultationForm";
 import AdminRoute from "./components/AdminRoute";
 import Disclaimer from "./pages/Disclaimer";
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -33,19 +34,22 @@ function App() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route
-        path="/consultation"
-        element={
-          <AdminRoute role={role}>
-            <ConsultationForm />
-          </AdminRoute>
-        }
-      />
-      <Route path="/disclaimer" element={<Disclaimer />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/consultation"
+          element={
+            <AdminRoute role={role}>
+              <ConsultationForm />
+            </AdminRoute>
+          }
+        />
+        <Route path="/disclaimer" element={<Disclaimer />} />
+      </Routes>
+      <Toaster position="top-right" />
+    </>
   );
 }
 
