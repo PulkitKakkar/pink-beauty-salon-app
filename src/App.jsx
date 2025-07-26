@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ConsultationForm from "./pages/ConsultationForm";
 import AdminRoute from "./components/AdminRoute";
+import Disclaimer from "./pages/Disclaimer";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -43,6 +44,7 @@ function App() {
           </AdminRoute>
         }
       />
+      <Route path="/disclaimer" element={<Disclaimer />} />
     </Routes>
   );
 }
