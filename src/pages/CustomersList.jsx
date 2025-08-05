@@ -3,6 +3,7 @@ import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from "firebase
 import { db } from "../firebase";
 import toast from "react-hot-toast";
 import "../styles/CustomersList.css";
+import BackLink from "../components/BackLink";
 
 export default function CustomersList() {
   const fieldLabels = {
@@ -96,6 +97,7 @@ export default function CustomersList() {
       fontFamily: "'Poppins', sans-serif",
       background: "linear-gradient(135deg, #fff0f5 0%, #ffe4ec 100%)"
     }}>
+      <BackLink/>
       <h2 style={{
         color: "#d63384",
         textAlign: "center",

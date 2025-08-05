@@ -30,15 +30,35 @@ export default function AdminDashboard() {
         }}
       >
         <button style={buttonStyle} onClick={() => navigate("/customers")}>
-          👥 View Customers Data
+          View Customers Data
         </button>
 
         <button style={buttonStyle} onClick={() => navigate("/consultation")}>
-          📝 Consultation Form
+          Laser Treatment Consultation Form
+        </button>
+
+        <button style={buttonStyle} onClick={() => navigate("/anti-wrinkle")}>
+          Anti-wrinkle Treatment Consultation Form
+        </button>
+
+        <button style={buttonStyle} onClick={() => navigate("/derma-filler")}>
+          Derma Filler Treatment Consultation Form
+        </button>
+
+        <button style={buttonStyle} onClick={() => navigate("/lemon-bottle")}>
+          Lemon Bottle Treatment Consultation Form
+        </button>
+
+        <button style={buttonStyle} onClick={() => navigate("/iv-therapy")}>
+          IV Therapy Treatment Consultation Form
+        </button>
+
+        <button style={buttonStyle} onClick={() => navigate("/lemon-bottle")}>
+          Lemon Bottle Treatment Consultation Form
         </button>
 
         <button style={buttonStyle} onClick={() => navigate("/calendar")}>
-          📅 Calendar
+          Calendar
         </button>
       </div>
     </div>

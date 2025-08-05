@@ -6,6 +6,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { toast } from "react-hot-toast";
 import "./CalendarPage.css";
+import BackLink from "../components/BackLink";
 
 export default function CalendarPage() {
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -150,6 +151,7 @@ export default function CalendarPage() {
 
   return (
     <div className="calendar-page-container">
+      <BackLink />
       <h2 className="calendar-title">📅 Book Your Slot</h2>
 
       <div className="google-login-section">
@@ -226,8 +228,14 @@ export default function CalendarPage() {
           <div className="modal-card">
             <h3 className="modal-heading">📅 Book Appointment</h3>
             <div className="modal-times">
-              <p><strong>Start:</strong> {new Date(selectedSlot.start).toLocaleString()}</p>
-              <p><strong>End:</strong> {new Date(selectedSlot.end).toLocaleString()}</p>
+              <p>
+                <strong>Start:</strong>{" "}
+                {new Date(selectedSlot.start).toLocaleString()}
+              </p>
+              <p>
+                <strong>End:</strong>{" "}
+                {new Date(selectedSlot.end).toLocaleString()}
+              </p>
             </div>
 
             <div className="modal-field">
@@ -247,50 +255,63 @@ export default function CalendarPage() {
               <textarea
                 value={bookingDetails.service}
                 onChange={(e) =>
-                  setBookingDetails({ ...bookingDetails, service: e.target.value })
+                  setBookingDetails({
+                    ...bookingDetails,
+                    service: e.target.value,
+                  })
                 }
                 placeholder="e.g. Full Body Massage"
               />
             </div>
 
             <div className="modal-buttons">
-              <button className="confirm-btn" onClick={() => {
-                setEvents([
-                  ...events,
-                  {
-                    title: `${bookingDetails.name} - ${bookingDetails.service}`,
-                    start: selectedSlot.start,
-                    end: selectedSlot.end,
-                    backgroundColor: "#d63384",
-                    borderColor: "#d63384",
-                    textColor: "white",
-                  },
-                ]);
-
-                gapi.client.calendar.events
-                  .insert({
-                    calendarId: "primary",
-                    resource: {
-                      summary: `${bookingDetails.name} - ${bookingDetails.service}`,
-                      start: { dateTime: selectedSlot.start },
-                      end: { dateTime: selectedSlot.end },
+              <button
+                className="confirm-btn"
+                onClick={() => {
+                  setEvents([
+                    ...events,
+                    {
+                      title: `${bookingDetails.name} - ${bookingDetails.service}`,
+                      start: selectedSlot.start,
+                      end: selectedSlot.end,
+                      backgroundColor: "#d63384",
+                      borderColor: "#d63384",
+                      textColor: "white",
                     },
-                  })
-                  .then(() => {
-                    toast.success("✅ Booking confirmed & added to Google Calendar!");
-                  })
-                  .catch((err) => {
-                    console.error("❌ Google Calendar API error:", err);
-                    toast.error("Booking confirmed, but could not sync with Google Calendar.");
-                  });
+                  ]);
 
-                setShowBookingModal(false);
-                setBookingDetails({ name: "", service: "" });
-                setSelectedEventId(null);
-              }}>
+                  gapi.client.calendar.events
+                    .insert({
+                      calendarId: "primary",
+                      resource: {
+                        summary: `${bookingDetails.name} - ${bookingDetails.service}`,
+                        start: { dateTime: selectedSlot.start },
+                        end: { dateTime: selectedSlot.end },
+                      },
+                    })
+                    .then(() => {
+                      toast.success(
+                        "✅ Booking confirmed & added to Google Calendar!"
+                      );
+                    })
+                    .catch((err) => {
+                      console.error("❌ Google Calendar API error:", err);
+                      toast.error(
+                        "Booking confirmed, but could not sync with Google Calendar."
+                      );
+                    });
+
+                  setShowBookingModal(false);
+                  setBookingDetails({ name: "", service: "" });
+                  setSelectedEventId(null);
+                }}
+              >
                 Confirm Booking
               </button>
-              <button className="cancel-btn" onClick={() => setShowBookingModal(false)}>
+              <button
+                className="cancel-btn"
+                onClick={() => setShowBookingModal(false)}
+              >
                 Cancel
               </button>
               {selectedEventId && (
@@ -304,15 +325,20 @@ export default function CalendarPage() {
                       })
                       .then(() => {
                         toast.success("Booking cancelled from Google Calendar");
-                        setEvents(events.filter((event) => {
-                          const eventStart = new Date(event.start).toISOString();
-                          const eventEnd = new Date(event.end).toISOString();
-                          return !(
-                            eventStart === selectedSlot.start &&
-                            eventEnd === selectedSlot.end &&
-                            event.title === `${bookingDetails.name} - ${bookingDetails.service}`
-                          );
-                        }));
+                        setEvents(
+                          events.filter((event) => {
+                            const eventStart = new Date(
+                              event.start
+                            ).toISOString();
+                            const eventEnd = new Date(event.end).toISOString();
+                            return !(
+                              eventStart === selectedSlot.start &&
+                              eventEnd === selectedSlot.end &&
+                              event.title ===
+                                `${bookingDetails.name} - ${bookingDetails.service}`
+                            );
+                          })
+                        );
                         setShowBookingModal(false);
                         setBookingDetails({ name: "", service: "" });
                         setSelectedEventId(null);

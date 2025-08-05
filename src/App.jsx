@@ -11,8 +11,12 @@ import AdminRoute from "./components/AdminRoute";
 import Disclaimer from "./pages/Disclaimer";
 import { Toaster } from 'react-hot-toast';
 import AdminDashboard from "./pages/AdminDashboard";
-import CustomersList from "./pages/CustomersList"; // placeholder
-import CalendarPage from "./pages/CalendarPage"; // placeholder
+import CustomersList from "./pages/CustomersList"; 
+import CalendarPage from "./pages/CalendarPage";
+import AntiWrinkleForm from "./pages/AntiWrinkleForm"; 
+import DermalFillerForm from "./pages/DermalFillerForm";
+import LemonBottleForm from "./pages/LemonBottleForm";
+import IVTherapyConsultationForm from "./pages/IVTherapyConsultationForm";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -43,9 +47,16 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/customers" element={<CustomersList />} /> {/* placeholder */}
+        <Route path="/customers" element={<CustomersList />} />{" "}
+        {/* placeholder */}
         <Route path="/consultation" element={<ConsultationForm />} />
-        <Route path="/calendar" element={<CalendarPage />} /> {/* placeholder */}
+        <Route path="/calendar" element={<CalendarPage />} />{" "}
+        {/* placeholder */}
+        <Route path="/anti-wrinkle" element={<AntiWrinkleForm />} />
+        <Route path="/derma-filler" element={<DermalFillerForm />} />
+        <Route path="/lemon-bottle" element={<LemonBottleForm />} />
+        <Route path="/iv-therapy" element={<IVTherapyConsultationForm />} />
+        <Route path="/lemon-bottle" element={<LemonBottleForm />} />
       </Routes>
       <Toaster position="top-right" />
     </>

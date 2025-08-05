@@ -8,6 +8,7 @@ import TreatmentHistorySection from "../components/TreatmentHistorySection";
 import SkinTypeAnalysisSection from "../components/SkinTypeAnalysisSection";
 import DisclaimerSection from "../components/DisclaimerSection";
 import SignatureSection from "../components/SignatureSection";
+import BackLink from "../components/BackLink";
 
 const skinQuestions = [
   {
@@ -289,7 +290,6 @@ export default function ConsultationForm() {
     <div
       style={{
         maxWidth: "600px",
-        width: "95%",
         margin: "20px auto",
         padding: "20px",
         borderRadius: "16px",
@@ -298,10 +298,11 @@ export default function ConsultationForm() {
         fontFamily: "'Poppins', sans-serif",
       }}
     >
+      <BackLink/>
       <h2
         style={{ color: "#d63384", textAlign: "center", marginBottom: "20px" }}
       >
-        Pink Beauty Salon - Client Consultation Form
+        Laser Treatment Consultation Form
       </h2>
 
       <form onSubmit={handleSubmit}>
