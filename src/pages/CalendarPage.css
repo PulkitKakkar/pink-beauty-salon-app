@@ -34,7 +34,7 @@
 /* Title styling */
 .calendar-container .fc-toolbar-title {
   grid-area: title;
-  font-size: 24px;
+  font-size: 16px;
   font-weight: bold;
   color: #d63384;
 }
@@ -77,5 +77,123 @@
       "today today today"
       "views views views";
     text-align: center;
+  }
+}
+
+/* 🩷 Modal Overlay Background */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 🩷 Modal Card */
+.modal-card {
+  background-color: #fff0f6;
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* 🩷 Modal Heading */
+.modal-heading {
+  font-size: 20px;
+  font-weight: bold;
+  color: #d63384;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* 🩷 Booking Time Info */
+.modal-times {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+/* 🩷 Form Fields */
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.modal-field label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.modal-field input,
+.modal-field textarea {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  outline-color: #d63384;
+}
+
+/* 🩷 Buttons */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.confirm-btn {
+  background-color: #d63384;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.confirm-btn:hover {
+  background-color: #b82c70;
+}
+
+.cancel-btn {
+  background-color: #eee;
+  color: #333;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #ccc;
+}
+
+@media (max-width: 480px) {
+  .modal-card {
+    padding: 16px;
+    border-radius: 12px;
+    margin: 16px;
+  }
+
+  .confirm-btn,
+  .cancel-btn {
+    flex: 1;
+    font-size: 13px;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 8px;
   }
 }

@@ -16,6 +16,7 @@ export default function CalendarPage() {
   });
   const [events, setEvents] = useState([]);
   const [googleUser, setGoogleUser] = useState(null);
+  const [selectedEventId, setSelectedEventId] = useState(null);
 
   const fetchCalendarEvents = () => {
     gapi.client.calendar.events
@@ -36,6 +37,7 @@ export default function CalendarPage() {
           backgroundColor: "#6c757d",
           borderColor: "#6c757d",
           textColor: "white",
+          id: evt.id,
         }));
         setEvents(mappedEvents);
       })
@@ -132,12 +134,18 @@ export default function CalendarPage() {
     const start = selectInfo.startStr;
     const end = selectInfo.endStr;
     setSelectedSlot({ start, end });
+    setBookingDetails({ name: "", service: "" });
+    setSelectedEventId(null);
     setShowBookingModal(true);
   };
 
   const handleDateClick = (info) => {
-    const calendarApi = info.view.calendar;
-    calendarApi.changeView("timeGridDay", info.dateStr);
+    const start = info.dateStr;
+    const end = new Date(new Date(start).getTime() + 30 * 60 * 1000).toISOString(); // 30 min slot
+    setSelectedSlot({ start, end });
+    setBookingDetails({ name: "", service: "" });
+    setSelectedEventId(null);
+    setShowBookingModal(true);
   };
 
   return (
@@ -163,7 +171,27 @@ export default function CalendarPage() {
           selectable={true}
           selectMirror={true}
           select={handleDateSelect}
-          dateClick={handleDateClick}
+          dateClick={(info) => {
+            const calendarApi = info.view.calendar;
+            if (info.view.type === "dayGridMonth") {
+              calendarApi.changeView("timeGridDay", info.date);
+            } else {
+              handleDateClick(info);
+            }
+          }}
+          eventClick={(clickInfo) => {
+            const event = clickInfo.event;
+            setSelectedSlot({
+              start: event.start.toISOString(),
+              end: event.end.toISOString(),
+            });
+            setBookingDetails({
+              name: event.title.split(" - ")[0] || "",
+              service: event.title.split(" - ")[1] || "",
+            });
+            setSelectedEventId(event.id || null);
+            setShowBookingModal(true);
+          }}
           selectAllow={() => true}
           headerToolbar={{
             left: "prev,next",
@@ -195,40 +223,38 @@ export default function CalendarPage() {
 
       {showBookingModal && selectedSlot && (
         <div className="modal-overlay">
-          <div className="modal-content">
-            <h3 className="modal-title">Book Slot</h3>
-            <p>
-              <strong>Start:</strong> {selectedSlot.start}
-            </p>
-            <p>
-              <strong>End:</strong> {selectedSlot.end}
-            </p>
+          <div className="modal-card">
+            <h3 className="modal-heading">📅 Book Appointment</h3>
+            <div className="modal-times">
+              <p><strong>Start:</strong> {new Date(selectedSlot.start).toLocaleString()}</p>
+              <p><strong>End:</strong> {new Date(selectedSlot.end).toLocaleString()}</p>
+            </div>
 
-            <label className="modal-label">Your Name</label>
-            <input
-              type="text"
-              value={bookingDetails.name}
-              onChange={(e) =>
-                setBookingDetails({ ...bookingDetails, name: e.target.value })
-              }
-              className="modal-input"
-            />
+            <div className="modal-field">
+              <label>Your Name</label>
+              <input
+                type="text"
+                value={bookingDetails.name}
+                onChange={(e) =>
+                  setBookingDetails({ ...bookingDetails, name: e.target.value })
+                }
+                placeholder="e.g. Sarah Smith"
+              />
+            </div>
 
-            <label className="modal-label">Requested Service</label>
-            <textarea
-              value={bookingDetails.service}
-              onChange={(e) =>
-                setBookingDetails({
-                  ...bookingDetails,
-                  service: e.target.value,
-                })
-              }
-              className="modal-textarea"
-            />
+            <div className="modal-field">
+              <label>Requested Service</label>
+              <textarea
+                value={bookingDetails.service}
+                onChange={(e) =>
+                  setBookingDetails({ ...bookingDetails, service: e.target.value })
+                }
+                placeholder="e.g. Full Body Massage"
+              />
+            </div>
 
-            <button
-              className="confirm-btn"
-              onClick={() => {
+            <div className="modal-buttons">
+              <button className="confirm-btn" onClick={() => {
                 setEvents([
                   ...events,
                   {
@@ -251,30 +277,56 @@ export default function CalendarPage() {
                     },
                   })
                   .then(() => {
-                    toast.success(
-                      "✅ Booking confirmed & added to Google Calendar!"
-                    );
+                    toast.success("✅ Booking confirmed & added to Google Calendar!");
                   })
                   .catch((err) => {
                     console.error("❌ Google Calendar API error:", err);
-                    toast.error(
-                      "Booking confirmed, but could not sync with Google Calendar."
-                    );
+                    toast.error("Booking confirmed, but could not sync with Google Calendar.");
                   });
 
                 setShowBookingModal(false);
                 setBookingDetails({ name: "", service: "" });
-              }}
-            >
-              Confirm Booking
-            </button>
-
-            <button
-              className="cancel-btn"
-              onClick={() => setShowBookingModal(false)}
-            >
-              Cancel
-            </button>
+                setSelectedEventId(null);
+              }}>
+                Confirm Booking
+              </button>
+              <button className="cancel-btn" onClick={() => setShowBookingModal(false)}>
+                Cancel
+              </button>
+              {selectedEventId && (
+                <button
+                  className="cancel-btn"
+                  onClick={() => {
+                    gapi.client.calendar.events
+                      .delete({
+                        calendarId: "primary",
+                        eventId: selectedEventId,
+                      })
+                      .then(() => {
+                        toast.success("Booking cancelled from Google Calendar");
+                        setEvents(events.filter((event) => {
+                          const eventStart = new Date(event.start).toISOString();
+                          const eventEnd = new Date(event.end).toISOString();
+                          return !(
+                            eventStart === selectedSlot.start &&
+                            eventEnd === selectedSlot.end &&
+                            event.title === `${bookingDetails.name} - ${bookingDetails.service}`
+                          );
+                        }));
+                        setShowBookingModal(false);
+                        setBookingDetails({ name: "", service: "" });
+                        setSelectedEventId(null);
+                      })
+                      .catch((err) => {
+                        console.error("Error cancelling event:", err);
+                        toast.error("Failed to cancel booking.");
+                      });
+                  }}
+                >
+                  Cancel Booking
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
