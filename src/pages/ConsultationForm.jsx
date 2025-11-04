@@ -169,6 +169,12 @@ export default function ConsultationForm() {
     treatments: "",
     skinTypeScore: "",
     disclaimerAccepted: false,
+    surgeryInLast6Months: "",
+    hadLaserHairRemovalBefore: "",
+    additionalMedications: "",
+    useSunbedsOrTanningProducts: "",
+    tattoosOrPermanentMakeup: "",
+    currentlyPregnantOrTryingToConceive: "",
   });
 
   const handleChange = (e) => {
@@ -253,6 +259,12 @@ export default function ConsultationForm() {
        treatments: "",
        skinTypeScore: "",
        disclaimerAccepted: false,
+       surgeryInLast6Months: "",
+       hadLaserHairRemovalBefore: "",
+       additionalMedications: "",
+       useSunbedsOrTanningProducts: "",
+       tattoosOrPermanentMakeup: "",
+       currentlyPregnantOrTryingToConceive: "",
      });
      setSkinAnswers({});
      setSkinScore(0);
@@ -313,6 +325,195 @@ export default function ConsultationForm() {
           labelStyle={labelStyle}
           formErrors={formErrors}
         />
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Areas to be treated
+            <textarea
+              name="areasToBeTreated"
+              value={form.areasToBeTreated}
+              onChange={handleChange}
+              style={inputStyle}
+              rows={3}
+              placeholder="e.g. Face, underarms, bikini line"
+            />
+          </label>
+          {formErrors.areasToBeTreated && (
+            <p style={{ color: "red", marginTop: "4px" }}>{formErrors.areasToBeTreated}</p>
+          )}
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Have you had surgery in the last 6 months?
+            <select
+              name="surgeryInLast6Months"
+              value={form.surgeryInLast6Months}
+              onChange={handleChange}
+              style={inputStyle}
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </label>
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Have you had laser hair removal before?
+            <select
+              name="hadLaserHairRemovalBefore"
+              value={form.hadLaserHairRemovalBefore}
+              onChange={handleChange}
+              style={inputStyle}
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </label>
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Do you use sun beds or self-tanning products?
+            <select
+              name="useSunbedsOrTanningProducts"
+              value={form.useSunbedsOrTanningProducts}
+              onChange={handleChange}
+              style={inputStyle}
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </label>
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Do you have tattoos or permanent makeup in areas to be treated?
+            <select
+              name="tattoosOrPermanentMakeup"
+              value={form.tattoosOrPermanentMakeup}
+              onChange={handleChange}
+              style={inputStyle}
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </label>
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Are you currently pregnant or trying to conceive?
+            <select
+              name="currentlyPregnantOrTryingToConceive"
+              value={form.currentlyPregnantOrTryingToConceive}
+              onChange={handleChange}
+              style={inputStyle}
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </label>
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Additional Medications or Notes
+            <textarea
+              name="additionalMedications"
+              value={form.additionalMedications}
+              onChange={handleChange}
+              style={inputStyle}
+              rows={3}
+              placeholder="e.g. Any other medications or important notes"
+            />
+          </label>
+        </div>
+
+        {/* --- Missing medical questions from PDF (added) --- */}
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Are you sensitive to any soaps or lotions?
+            <select
+              name="sensitiveSoaps"
+              value={form.sensitiveSoaps}
+              onChange={handleChange}
+              style={inputStyle}
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </label>
+          {formErrors.sensitiveSoaps && (
+            <p style={{ color: "red", marginTop: "6px" }}>{formErrors.sensitiveSoaps}</p>
+          )}
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Does your skin get blotchy, red or irritated easily?
+            <select
+              name="skinIrritated"
+              value={form.skinIrritated}
+              onChange={handleChange}
+              style={inputStyle}
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </label>
+          {formErrors.skinIrritated && (
+            <p style={{ color: "red", marginTop: "6px" }}>{formErrors.skinIrritated}</p>
+          )}
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Have you had significant sun exposure in the last 6 weeks?
+            <select
+              name="sunExposure6Weeks"
+              value={form.sunExposure6Weeks}
+              onChange={handleChange}
+              style={inputStyle}
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </label>
+          {formErrors.sunExposure6Weeks && (
+            <p style={{ color: "red", marginTop: "6px" }}>{formErrors.sunExposure6Weeks}</p>
+          )}
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>
+            Have you waxed the areas to be treated within the last month?
+            <select
+              name="waxedAreasMonth"
+              value={form.waxedAreasMonth}
+              onChange={handleChange}
+              style={inputStyle}
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </label>
+          {formErrors.waxedAreasMonth && (
+            <p style={{ color: "red", marginTop: "6px" }}>{formErrors.waxedAreasMonth}</p>
+          )}
+        </div>
+        {/* --- end added fields --- */}
+
         <MedicalBackgroundSection
           form={form}
           handleChange={handleChange}
@@ -339,6 +540,44 @@ export default function ConsultationForm() {
           handleChange={handleChange}
           formErrors={formErrors}
         />
+        {/* Laser Hair Removal Consent & Acknowledgement Section */}
+        <div style={{ marginBottom: "20px" }}>
+          <h3 style={{ color: "#d63384", marginBottom: "10px" }}>
+            Laser Hair Removal Consent & Acknowledgement
+          </h3>
+          {[
+            "I authorise staff to perform laser hair removal using 4-wavelength system.",
+            "I understand this is a new aesthetic/cosmetic procedure with ongoing studies.",
+            "I acknowledge the treatment may not produce permanent hair removal.",
+            "I accept that no guarantees have been made to me regarding the results.",
+            "I understand side effects may include discomfort, swelling, redness, itching, blistering, or colour changes.",
+            "I understand hyper/hypopigmentation may occur and take months to resolve.",
+            "I will avoid sun exposure before and after treatment.",
+            "I have not used oral isotretinoin (Accutane) within the last 6 months.",
+            "I understand blistering or crusting is rare but possible and may take 2–4 weeks to heal.",
+            "I acknowledge the risk of herpes reactivation and understand precautions may be taken.",
+            "I will use proper eye protection during the treatment.",
+            "All my questions have been answered to my satisfaction.",
+            "I accept all risks of treatment and understand the aftercare.",
+            "I understand a patch test is required and 72h must pass before treatment.",
+            "I am satisfied with the practitioner's explanations and conduct.",
+            "I acknowledge no loss or damage liability on the practitioner.",
+            "I understand patch tests are advised and performed at my discretion.",
+            "I consent to photographs for monitoring and advertising purposes."
+          ].map((text, index) => (
+            <div key={index} style={{ marginBottom: "10px" }}>
+              <label style={{ display: "flex", alignItems: "start", gap: "10px" }}>
+                <input
+                  type="checkbox"
+                  name={`consent${index}`}
+                  required
+                  style={{ marginTop: "4px" }}
+                />
+                <span>{text}</span>
+              </label>
+            </div>
+          ))}
+        </div>
         <SignatureSection
           sigPad={sigPad}
           clearSignature={clearSignature}
