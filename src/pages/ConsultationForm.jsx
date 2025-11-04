@@ -134,6 +134,7 @@ const labelStyle = {
 export default function ConsultationForm() {
   const sigPad = useRef({});
   const [signatureURL, setSignatureURL] = useState("");
+  const [clientPhotoDataUrl, setClientPhotoDataUrl] = useState("");
 
   const [skinAnswers, setSkinAnswers] = useState({});
   const [skinScore, setSkinScore] = useState(0);
@@ -178,6 +179,7 @@ export default function ConsultationForm() {
     usedRoaccutaneInLast6Months: "",
     anyOtherCosmeticProcedure: "",
     anyOtherCosmeticProcedureDetails: "",
+    clientPhoto: "",
     // Medical History fields
     skin_cancer: "",
     high_blood_pressure: "",
@@ -202,6 +204,17 @@ export default function ConsultationForm() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setClientPhotoDataUrl(reader.result);
+      setForm((prev) => ({ ...prev, clientPhoto: reader.result }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const clearSignature = () => {
@@ -257,6 +270,7 @@ export default function ConsultationForm() {
       await addDoc(collection(db, "consultations"), {
         ...form,
         signature: signatureURL,
+        clientPhoto: clientPhotoDataUrl || form.clientPhoto || "",
         createdAt: new Date(),
       });
 
@@ -303,6 +317,7 @@ export default function ConsultationForm() {
         usedRoaccutaneInLast6Months: "",
         anyOtherCosmeticProcedure: "",
         anyOtherCosmeticProcedureDetails: "",
+        clientPhoto: "",
         // Medical History fields
         skin_cancer: "",
         high_blood_pressure: "",
@@ -327,6 +342,7 @@ export default function ConsultationForm() {
       setSkinScore(0);
       setSignatureURL("");
       sigPad.current.clear();
+      setClientPhotoDataUrl("");
     } catch (error) {
       toast.error("❌ Something went wrong while saving.");
       console.error(error);
@@ -382,6 +398,44 @@ export default function ConsultationForm() {
           labelStyle={labelStyle}
           formErrors={formErrors}
         />
+        <div style={{ marginBottom: "18px" }}>
+          <label style={labelStyle}>Client photo (use camera on mobile)</label>
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={handlePhotoChange}
+            style={{ display: "block", marginTop: "8px" }}
+          />
+          {clientPhotoDataUrl && (
+            <div style={{ marginTop: "10px" }}>
+              <img
+                src={clientPhotoDataUrl}
+                alt="Client preview"
+                style={{ maxWidth: "180px", borderRadius: "8px", border: "1px solid #ddd" }}
+              />
+              <div style={{ marginTop: "6px" }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setClientPhotoDataUrl("");
+                    setForm((p) => ({ ...p, clientPhoto: "" }));
+                  }}
+                  style={{
+                    backgroundColor: "#fff",
+                    border: "1px solid #ccc",
+                    padding: "6px 10px",
+                    borderRadius: "6px",
+                    marginTop: "6px",
+                    cursor: "pointer"
+                  }}
+                >
+                  Remove photo
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
         <div style={{ marginBottom: "20px" }}>
           <label style={labelStyle}>
             Areas to be treated
