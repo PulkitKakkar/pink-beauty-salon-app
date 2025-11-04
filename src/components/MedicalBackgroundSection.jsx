@@ -6,10 +6,6 @@ export default function MedicalBackgroundSection({
 }) {
   return (
     <div>
-      <h3 style={{ color: "#c02675", marginTop: "20px" }}>
-        Medical Background
-      </h3>
-
       {/* Doctor care */}
       <div style={{ marginBottom: "15px" }}>
         <label style={labelStyle} htmlFor="doctorCare">

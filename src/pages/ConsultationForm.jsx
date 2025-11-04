@@ -18,8 +18,8 @@ const skinQuestions = [
       { label: "Blue, gray or green", score: 1 },
       { label: "Blue hazel or light brown", score: 2 },
       { label: "Dark brown", score: 3 },
-      { label: "Brownish black", score: 4 }
-    ]
+      { label: "Brownish black", score: 4 },
+    ],
   },
   {
     question: "Natural hair colour",
@@ -28,8 +28,8 @@ const skinQuestions = [
       { label: "Blonde", score: 1 },
       { label: "Chestnut or dark blonde", score: 2 },
       { label: "Dark brown", score: 3 },
-      { label: "Black", score: 4 }
-    ]
+      { label: "Black", score: 4 },
+    ],
   },
   {
     question: "Skin colour on non exposed areas",
@@ -38,8 +38,8 @@ const skinQuestions = [
       { label: "Very pale", score: 1 },
       { label: "Pale with beige tint", score: 2 },
       { label: "Light brown", score: 3 },
-      { label: "Dark brown", score: 4 }
-    ]
+      { label: "Dark brown", score: 4 },
+    ],
   },
   {
     question: "Freckles on unexposed areas",
@@ -48,8 +48,8 @@ const skinQuestions = [
       { label: "Several", score: 1 },
       { label: "Few", score: 2 },
       { label: "Very few", score: 3 },
-      { label: "None", score: 4 }
-    ]
+      { label: "None", score: 4 },
+    ],
   },
   {
     question: "Reaction to sun exposure: Blistering",
@@ -58,8 +58,8 @@ const skinQuestions = [
       { label: "Often burns, blisters, peels", score: 1 },
       { label: "Burns, sometimes blisters, peels", score: 2 },
       { label: "Rarely burns, never blisters", score: 3 },
-      { label: "Never burns", score: 4 }
-    ]
+      { label: "Never burns", score: 4 },
+    ],
   },
   {
     question: "Reaction to sun exposure: Degree of tan",
@@ -68,8 +68,8 @@ const skinQuestions = [
       { label: "Seldom tans", score: 1 },
       { label: "Sometimes tans", score: 2 },
       { label: "Often tans", score: 3 },
-      { label: "Always tans", score: 4 }
-    ]
+      { label: "Always tans", score: 4 },
+    ],
   },
   {
     question: "Reaction to sun exposure: Turning red",
@@ -78,8 +78,8 @@ const skinQuestions = [
       { label: "Moderate redness, sometimes blisters, peels", score: 1 },
       { label: "Mild redness, rarely blisters", score: 2 },
       { label: "Rarely red", score: 3 },
-      { label: "Never red", score: 4 }
-    ]
+      { label: "Never red", score: 4 },
+    ],
   },
   {
     question: "Face reaction to sun",
@@ -88,8 +88,8 @@ const skinQuestions = [
       { label: "Sensitive", score: 1 },
       { label: "Normal", score: 2 },
       { label: "Very resistant", score: 3 },
-      { label: "Never had a problem", score: 4 }
-    ]
+      { label: "Never had a problem", score: 4 },
+    ],
   },
   {
     question: "When did the area last receive a tan?",
@@ -98,8 +98,8 @@ const skinQuestions = [
       { label: "2–3 months ago", score: 1 },
       { label: "1–2 months ago", score: 2 },
       { label: "Less than a month ago", score: 3 },
-      { label: "Less than 2 weeks ago", score: 4 }
-    ]
+      { label: "Less than 2 weeks ago", score: 4 },
+    ],
   },
   {
     question: "How often is this area exposed to the sun?",
@@ -108,9 +108,9 @@ const skinQuestions = [
       { label: "Occasionally", score: 1 },
       { label: "Sometimes", score: 2 },
       { label: "Often", score: 3 },
-      { label: "Always", score: 4 }
-    ]
-  }
+      { label: "Always", score: 4 },
+    ],
+  },
 ];
 
 const inputStyle = {
@@ -175,6 +175,28 @@ export default function ConsultationForm() {
     useSunbedsOrTanningProducts: "",
     tattoosOrPermanentMakeup: "",
     currentlyPregnantOrTryingToConceive: "",
+    usedRoaccutaneInLast6Months: "",
+    anyOtherCosmeticProcedure: "",
+    anyOtherCosmeticProcedureDetails: "",
+    // Medical History fields
+    skin_cancer: "",
+    high_blood_pressure: "",
+    polycystic_ovaries: "",
+    cold_sores: "",
+    haemophilia: "",
+    menopause: "",
+    epilepsy: "",
+    keloid: "",
+    anti_inflammatory_drugs: "",
+    irregular_periods: "",
+    cancer: "",
+    heart_problems: "",
+    birth_control_pill: "",
+    diabetes: "",
+    anti_coagulant: "",
+    thyroid: "",
+    asprin: "",
+    medicalHistoryDetails: "",
   });
 
   const handleChange = (e) => {
@@ -193,88 +215,123 @@ export default function ConsultationForm() {
 
   const [formErrors, setFormErrors] = useState({});
 
- const handleSubmit = async (e) => {
-   e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-   // ✅ Clear previous errors
-   setFormErrors({});
+    // ✅ Clear previous errors
+    setFormErrors({});
 
-   let errors = {};
+    let errors = {};
 
-   // ✅ Inline validation for disclaimer
-   if (!form.disclaimerAccepted) {
-     errors.disclaimerAccepted =
-       "Please accept the disclaimer before submitting.";
-   }
+    // ✅ Inline validation for disclaimer
+    if (!form.disclaimerAccepted) {
+      errors.disclaimerAccepted =
+        "Please accept the disclaimer before submitting.";
+    }
 
-   // ✅ Inline validation for required fields (you can add more)
-   if (!form.clientName) errors.clientName = "Client name is required.";
-   if (!form.phone) errors.phone = "Phone number is required.";
+    // ✅ Inline validation for required fields (you can add more)
+    if (!form.clientName) errors.clientName = "Client name is required.";
+    if (!form.phone) errors.phone = "Phone number is required.";
 
-   // ✅ If errors exist, stop submission
-   if (Object.keys(errors).length > 0) {
-     setFormErrors(errors);
-     toast.error("Please fix the highlighted errors.");
-     return;
-   }
+    // --- Add validation for new fields ---
+    if (!form.usedRoaccutaneInLast6Months)
+      errors.usedRoaccutaneInLast6Months = "Please answer this question.";
+    if (!form.anyOtherCosmeticProcedure)
+      errors.anyOtherCosmeticProcedure = "Please answer this question.";
+    if (
+      form.anyOtherCosmeticProcedure === "yes" &&
+      !form.anyOtherCosmeticProcedureDetails
+    ) {
+      errors.anyOtherCosmeticProcedureDetails =
+        "Please list the procedures and dates.";
+    }
 
-   try {
-     await addDoc(collection(db, "consultations"), {
-       ...form,
-       signature: signatureURL,
-       createdAt: new Date(),
-     });
+    // ✅ If errors exist, stop submission
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      toast.error("Please fix the highlighted errors.");
+      return;
+    }
 
-     toast.success("✅ Consultation Form Saved!");
+    try {
+      await addDoc(collection(db, "consultations"), {
+        ...form,
+        signature: signatureURL,
+        createdAt: new Date(),
+      });
 
-     // ✅ Reset form (after successful save)
-     setForm({
-       date: new Date().toISOString().split("T")[0],
-       clientName: "",
-       dob: "",
-       address: "",
-       occupation: "",
-       homeTelephone: "",
-       mobile: "",
-       hearAboutUs: "",
-       areasToBeTreated: "",
-       phone: "",
-       email: "",
-       doctorCare: "",
-       doctorCareForWhat: "",
-       hormoneMedication: "",
-       hormoneMedicationDetails: "",
-       allMedications: "",
-       medications: "",
-       surgery: "",
-       surgeryExplain: "",
-       sensitiveSoaps: "",
-       skinIrritated: "",
-       sunExposure6Weeks: "",
-       waxedAreasMonth: "",
-       allergies: "",
-       tanning: "",
-       tattoos: "",
-       pregnant: "",
-       treatments: "",
-       skinTypeScore: "",
-       disclaimerAccepted: false,
-       surgeryInLast6Months: "",
-       hadLaserHairRemovalBefore: "",
-       additionalMedications: "",
-       useSunbedsOrTanningProducts: "",
-       tattoosOrPermanentMakeup: "",
-       currentlyPregnantOrTryingToConceive: "",
-     });
-     setSkinAnswers({});
-     setSkinScore(0);
-     setSignatureURL("");
-     sigPad.current.clear();
-   } catch (error) {
-     toast.error("❌ Something went wrong while saving.");
-     console.error(error);
-   }
- };
+      toast.success("✅ Consultation Form Saved!");
+
+      // ✅ Reset form (after successful save)
+      setForm({
+        date: new Date().toISOString().split("T")[0],
+        clientName: "",
+        dob: "",
+        address: "",
+        occupation: "",
+        homeTelephone: "",
+        mobile: "",
+        hearAboutUs: "",
+        areasToBeTreated: "",
+        phone: "",
+        email: "",
+        doctorCare: "",
+        doctorCareForWhat: "",
+        hormoneMedication: "",
+        hormoneMedicationDetails: "",
+        allMedications: "",
+        medications: "",
+        surgery: "",
+        surgeryExplain: "",
+        sensitiveSoaps: "",
+        skinIrritated: "",
+        sunExposure6Weeks: "",
+        waxedAreasMonth: "",
+        allergies: "",
+        tanning: "",
+        tattoos: "",
+        pregnant: "",
+        treatments: "",
+        skinTypeScore: "",
+        disclaimerAccepted: false,
+        surgeryInLast6Months: "",
+        hadLaserHairRemovalBefore: "",
+        additionalMedications: "",
+        useSunbedsOrTanningProducts: "",
+        tattoosOrPermanentMakeup: "",
+        currentlyPregnantOrTryingToConceive: "",
+        usedRoaccutaneInLast6Months: "",
+        anyOtherCosmeticProcedure: "",
+        anyOtherCosmeticProcedureDetails: "",
+        // Medical History fields
+        skin_cancer: "",
+        high_blood_pressure: "",
+        polycystic_ovaries: "",
+        cold_sores: "",
+        haemophilia: "",
+        menopause: "",
+        epilepsy: "",
+        keloid: "",
+        anti_inflammatory_drugs: "",
+        irregular_periods: "",
+        cancer: "",
+        heart_problems: "",
+        birth_control_pill: "",
+        diabetes: "",
+        anti_coagulant: "",
+        thyroid: "",
+        asprin: "",
+        medicalHistoryDetails: "",
+      });
+      setSkinAnswers({});
+      setSkinScore(0);
+      setSignatureURL("");
+      sigPad.current.clear();
+    } catch (error) {
+      toast.error("❌ Something went wrong while saving.");
+      console.error(error);
+    }
+  };
 
   const handleSkinAnswer = (question, score) => {
     setSkinAnswers((prev) => {
@@ -310,7 +367,7 @@ export default function ConsultationForm() {
         fontFamily: "'Poppins', sans-serif",
       }}
     >
-      <BackLink/>
+      <BackLink />
       <h2
         style={{ color: "#d63384", textAlign: "center", marginBottom: "20px" }}
       >
@@ -338,10 +395,19 @@ export default function ConsultationForm() {
             />
           </label>
           {formErrors.areasToBeTreated && (
-            <p style={{ color: "red", marginTop: "4px" }}>{formErrors.areasToBeTreated}</p>
+            <p style={{ color: "red", marginTop: "4px" }}>
+              {formErrors.areasToBeTreated}
+            </p>
           )}
         </div>
 
+        <MedicalBackgroundSection
+          form={form}
+          handleChange={handleChange}
+          inputStyle={inputStyle}
+          labelStyle={labelStyle}
+          formErrors={formErrors}
+        />
         <div style={{ marginBottom: "20px" }}>
           <label style={labelStyle}>
             Have you had surgery in the last 6 months?
@@ -452,7 +518,9 @@ export default function ConsultationForm() {
             </select>
           </label>
           {formErrors.sensitiveSoaps && (
-            <p style={{ color: "red", marginTop: "6px" }}>{formErrors.sensitiveSoaps}</p>
+            <p style={{ color: "red", marginTop: "6px" }}>
+              {formErrors.sensitiveSoaps}
+            </p>
           )}
         </div>
 
@@ -471,7 +539,9 @@ export default function ConsultationForm() {
             </select>
           </label>
           {formErrors.skinIrritated && (
-            <p style={{ color: "red", marginTop: "6px" }}>{formErrors.skinIrritated}</p>
+            <p style={{ color: "red", marginTop: "6px" }}>
+              {formErrors.skinIrritated}
+            </p>
           )}
         </div>
 
@@ -490,7 +560,9 @@ export default function ConsultationForm() {
             </select>
           </label>
           {formErrors.sunExposure6Weeks && (
-            <p style={{ color: "red", marginTop: "6px" }}>{formErrors.sunExposure6Weeks}</p>
+            <p style={{ color: "red", marginTop: "6px" }}>
+              {formErrors.sunExposure6Weeks}
+            </p>
           )}
         </div>
 
@@ -509,25 +581,143 @@ export default function ConsultationForm() {
             </select>
           </label>
           {formErrors.waxedAreasMonth && (
-            <p style={{ color: "red", marginTop: "6px" }}>{formErrors.waxedAreasMonth}</p>
+            <p style={{ color: "red", marginTop: "6px" }}>
+              {formErrors.waxedAreasMonth}
+            </p>
           )}
         </div>
         {/* --- end added fields --- */}
 
-        <MedicalBackgroundSection
+        {/* ---------------- Page 2 (PDF) — Previous meds & procedures ---------------- */}
+        <div style={{ marginBottom: "18px" }}>
+          <div style={{ marginBottom: "12px" }}>
+            <label style={labelStyle}>
+              Have you used Roaccutane (isotretinoin) within the last 6 months?
+              <select
+                name="usedRoaccutaneInLast6Months"
+                value={form.usedRoaccutaneInLast6Months}
+                onChange={handleChange}
+                style={inputStyle}
+              >
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </label>
+            {formErrors.usedRoaccutaneInLast6Months && (
+              <p style={{ color: "red", marginTop: "6px" }}>
+                {formErrors.usedRoaccutaneInLast6Months}
+              </p>
+            )}
+          </div>
+
+          <div style={{ marginBottom: "12px" }}>
+            <label style={labelStyle}>
+              Have you had any other cosmetic procedure(s) previously?
+              <select
+                name="anyOtherCosmeticProcedure"
+                value={form.anyOtherCosmeticProcedure}
+                onChange={handleChange}
+                style={inputStyle}
+              >
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </label>
+            {formErrors.anyOtherCosmeticProcedure && (
+              <p style={{ color: "red", marginTop: "6px" }}>
+                {formErrors.anyOtherCosmeticProcedure}
+              </p>
+            )}
+          </div>
+
+          <div style={{ marginBottom: "12px" }}>
+            <label style={labelStyle}>
+              If yes, please state which procedure(s) and approximate date(s)
+              <textarea
+                name="anyOtherCosmeticProcedureDetails"
+                value={form.anyOtherCosmeticProcedureDetails}
+                onChange={handleChange}
+                style={{ ...inputStyle, minHeight: "86px" }}
+                placeholder="e.g. Botox (Jan 2024) — Forehead; Filler (Mar 2023) — Lips"
+              />
+            </label>
+            {formErrors.anyOtherCosmeticProcedureDetails && (
+              <p style={{ color: "red", marginTop: "6px" }}>
+                {formErrors.anyOtherCosmeticProcedureDetails}
+              </p>
+            )}
+          </div>
+        </div>
+        {/* ---------------- end Page 2 block ---------------- */}
+
+        {/* ---------------- Medical History (from PDF) ---------------- */}
+        <div style={{ marginBottom: "18px" }}>
+          <h3 style={{ color: "#d63384", marginBottom: "10px" }}>
+            Medical History
+          </h3>
+
+          {[
+            "Skin Cancer",
+            "High Blood Pressure",
+            "Polycystic ovaries",
+            "Cold sores",
+            "Haemophilia",
+            "Menopause",
+            "Epilepsy",
+            "Keloid",
+            "Anti-inflammatory drugs",
+            "Irregular periods",
+            "Cancer",
+            "Heart Problems",
+            "Birth control pill",
+            "Diabetes",
+            "Anti coagulant",
+            "Thyroid",
+            "Asprin",
+          ].map((condition) => (
+            <div key={condition} style={{ marginBottom: "12px" }}>
+              <label style={labelStyle}>
+                {condition}
+                <select
+                  name={condition.replace(/\s+/g, "_").toLowerCase()}
+                  value={
+                    form[condition.replace(/\s+/g, "_").toLowerCase()] || ""
+                  }
+                  onChange={handleChange}
+                  style={inputStyle}
+                >
+                  <option value="">Select</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </label>
+            </div>
+          ))}
+
+          <div style={{ marginBottom: "12px" }}>
+            <label style={labelStyle}>
+              If yes to any of the above, please explain and include dates
+              <textarea
+                name="medicalHistoryDetails"
+                value={form.medicalHistoryDetails || ""}
+                onChange={handleChange}
+                style={{ ...inputStyle, minHeight: "80px" }}
+                placeholder="Please explain details here..."
+              />
+            </label>
+          </div>
+        </div>
+        {/* ---------------- end Medical History block ---------------- */}
+
+        {/* <TreatmentHistorySection
           form={form}
           handleChange={handleChange}
           inputStyle={inputStyle}
           labelStyle={labelStyle}
           formErrors={formErrors}
-        />
-        <TreatmentHistorySection
-          form={form}
-          handleChange={handleChange}
-          inputStyle={inputStyle}
-          labelStyle={labelStyle}
-          formErrors={formErrors}
-        />
+        /> */}
         <SkinTypeAnalysisSection
           skinQuestions={skinQuestions}
           skinAnswers={skinAnswers}
@@ -540,44 +730,7 @@ export default function ConsultationForm() {
           handleChange={handleChange}
           formErrors={formErrors}
         />
-        {/* Laser Hair Removal Consent & Acknowledgement Section */}
-        <div style={{ marginBottom: "20px" }}>
-          <h3 style={{ color: "#d63384", marginBottom: "10px" }}>
-            Laser Hair Removal Consent & Acknowledgement
-          </h3>
-          {[
-            "I authorise staff to perform laser hair removal using 4-wavelength system.",
-            "I understand this is a new aesthetic/cosmetic procedure with ongoing studies.",
-            "I acknowledge the treatment may not produce permanent hair removal.",
-            "I accept that no guarantees have been made to me regarding the results.",
-            "I understand side effects may include discomfort, swelling, redness, itching, blistering, or colour changes.",
-            "I understand hyper/hypopigmentation may occur and take months to resolve.",
-            "I will avoid sun exposure before and after treatment.",
-            "I have not used oral isotretinoin (Accutane) within the last 6 months.",
-            "I understand blistering or crusting is rare but possible and may take 2–4 weeks to heal.",
-            "I acknowledge the risk of herpes reactivation and understand precautions may be taken.",
-            "I will use proper eye protection during the treatment.",
-            "All my questions have been answered to my satisfaction.",
-            "I accept all risks of treatment and understand the aftercare.",
-            "I understand a patch test is required and 72h must pass before treatment.",
-            "I am satisfied with the practitioner's explanations and conduct.",
-            "I acknowledge no loss or damage liability on the practitioner.",
-            "I understand patch tests are advised and performed at my discretion.",
-            "I consent to photographs for monitoring and advertising purposes."
-          ].map((text, index) => (
-            <div key={index} style={{ marginBottom: "10px" }}>
-              <label style={{ display: "flex", alignItems: "start", gap: "10px" }}>
-                <input
-                  type="checkbox"
-                  name={`consent${index}`}
-                  required
-                  style={{ marginTop: "4px" }}
-                />
-                <span>{text}</span>
-              </label>
-            </div>
-          ))}
-        </div>
+
         <SignatureSection
           sigPad={sigPad}
           clearSignature={clearSignature}
