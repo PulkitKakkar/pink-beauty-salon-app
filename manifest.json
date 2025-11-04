@@ -3,7 +3,7 @@
   "name": "Pink Beauty Salon App",
   "icons": [
     {
-      "src": "/pink-logo.avif",
+      "src": "/src/assets/pink-logo.jpeg",
       "type": "image/png",
       "sizes": "192x192"
     }
