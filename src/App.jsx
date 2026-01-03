@@ -45,7 +45,7 @@ function App() {
       <Routes>
         {user ? (
           <>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/disclaimer" element={<Disclaimer />} />
             <Route path="/admin" element={<AdminDashboard />} />
@@ -59,12 +59,12 @@ function App() {
             <Route path="/lemon-bottle" element={<LemonBottleForm />} />
             <Route path="/iv-therapy" element={<IVTherapyConsultationForm />} />
             <Route path="/lemon-bottle" element={<LemonBottleForm />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </>
         ) : (
           <>
-            <Route path="*" element={<Navigate to="/" replace />} />
-            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </>
         )}
       </Routes>
