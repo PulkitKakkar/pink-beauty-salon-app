@@ -3,18 +3,18 @@
   "name": "Pink Beauty Salon App",
   "icons": [
     {
-      "src": "/src/assets/pink-logo.jpeg",
+      "src": "/pink-logo.jpeg",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/src/assets/pink-logo.jpeg",
+      "src": "/pink-logo.jpeg",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#fff0f5",
-  "background_color": "#ffffff"
+  "theme_color": "#d63384",
+  "background_color": "#fff0f5"
 }
