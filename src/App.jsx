@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { getUserRole } from "./utils/getUserRole";
@@ -43,20 +43,30 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/disclaimer" element={<Disclaimer />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/customers" element={<CustomersList />} />{" "}
-        {/* placeholder */}
-        <Route path="/consultation" element={<ConsultationForm />} />
-        <Route path="/calendar" element={<CalendarPage />} />{" "}
-        {/* placeholder */}
-        <Route path="/anti-wrinkle" element={<AntiWrinkleForm />} />
-        <Route path="/derma-filler" element={<DermalFillerForm />} />
-        <Route path="/lemon-bottle" element={<LemonBottleForm />} />
-        <Route path="/iv-therapy" element={<IVTherapyConsultationForm />} />
-        <Route path="/lemon-bottle" element={<LemonBottleForm />} />
+        {user ? (
+          <>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/customers" element={<CustomersList />} />
+            {/* placeholder */}
+            <Route path="/consultation" element={<ConsultationForm />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            {/* placeholder */}
+            <Route path="/anti-wrinkle" element={<AntiWrinkleForm />} />
+            <Route path="/derma-filler" element={<DermalFillerForm />} />
+            <Route path="/lemon-bottle" element={<LemonBottleForm />} />
+            <Route path="/iv-therapy" element={<IVTherapyConsultationForm />} />
+            <Route path="/lemon-bottle" element={<LemonBottleForm />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </>
+        ) : (
+          <>
+            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/" element={<Login />} />
+          </>
+        )}
       </Routes>
       <Toaster position="top-right" />
     </>

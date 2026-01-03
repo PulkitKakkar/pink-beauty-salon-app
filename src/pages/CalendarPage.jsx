@@ -7,6 +7,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { toast } from "react-hot-toast";
 import "./CalendarPage.css";
 import BackLink from "../components/BackLink";
+import { db } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 export default function CalendarPage() {
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -48,20 +50,22 @@ export default function CalendarPage() {
   };
 
   useEffect(() => {
+    const storedToken = localStorage.getItem("google_token");
+
     function start() {
       gapi.client
         .init({
           apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
+          clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+          scope: "https://www.googleapis.com/auth/calendar.events",
           discoveryDocs: [
             "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
           ],
         })
         .then(() => {
           console.log("✅ Google API client initialized");
-          const storedToken = localStorage.getItem("google_token");
           if (storedToken) {
             gapi.client.setToken({ access_token: storedToken });
-            fetchCalendarEvents();
             gapi.client
               .request({
                 path: "https://www.googleapis.com/oauth2/v2/userinfo",
@@ -72,9 +76,12 @@ export default function CalendarPage() {
                 } else {
                   setGoogleUser({ email: "Manager" });
                 }
+                fetchCalendarEvents(); // ✅ Fetch events after login
               })
               .catch(() => {
-                setGoogleUser({ email: "Manager" });
+                setGoogleUser(null);
+                localStorage.removeItem("google_token");
+                fetchCalendarEvents();
               });
           }
         })
@@ -82,6 +89,7 @@ export default function CalendarPage() {
           console.error("❌ Error initializing Google API client", error);
         });
     }
+
     gapi.load("client", start);
 
     const script = document.createElement("script");
@@ -142,7 +150,9 @@ export default function CalendarPage() {
 
   const handleDateClick = (info) => {
     const start = info.dateStr;
-    const end = new Date(new Date(start).getTime() + 30 * 60 * 1000).toISOString(); // 30 min slot
+    const end = new Date(
+      new Date(start).getTime() + 30 * 60 * 1000
+    ).toISOString(); // 30 min slot
     setSelectedSlot({ start, end });
     setBookingDetails({ name: "", service: "" });
     setSelectedEventId(null);
@@ -267,7 +277,7 @@ export default function CalendarPage() {
             <div className="modal-buttons">
               <button
                 className="confirm-btn"
-                onClick={() => {
+                onClick={async () => {
                   setEvents([
                     ...events,
                     {
@@ -279,6 +289,24 @@ export default function CalendarPage() {
                       textColor: "white",
                     },
                   ]);
+
+                  try {
+                    await addDoc(collection(db, "appointments"), {
+                      name: bookingDetails.name,
+                      service: bookingDetails.service,
+                      start: selectedSlot.start,
+                      end: selectedSlot.end,
+                      createdAt: new Date(),
+                    });
+                  } catch (error) {
+                    console.error(
+                      "❌ Failed to save booking to Firestore:",
+                      error
+                    );
+                    toast.error(
+                      "Booking added, but failed to save in database."
+                    );
+                  }
 
                   gapi.client.calendar.events
                     .insert({
