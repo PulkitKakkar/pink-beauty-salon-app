@@ -9,11 +9,11 @@ import Dashboard from "./pages/Dashboard";
 import ConsultationForm from "./pages/ConsultationForm";
 import AdminRoute from "./components/AdminRoute";
 import Disclaimer from "./pages/Disclaimer";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 import AdminDashboard from "./pages/AdminDashboard";
-import CustomersList from "./pages/CustomersList"; 
+import CustomersList from "./pages/CustomersList";
 import CalendarPage from "./pages/CalendarPage";
-import AntiWrinkleForm from "./pages/AntiWrinkleForm"; 
+import AntiWrinkleForm from "./pages/AntiWrinkleForm";
 import DermalFillerForm from "./pages/DermalFillerForm";
 import LemonBottleForm from "./pages/LemonBottleForm";
 import IVTherapyConsultationForm from "./pages/IVTherapyConsultationForm";
@@ -45,7 +45,7 @@ function App() {
       <Routes>
         {user ? (
           <>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Navigate to="/admin" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/disclaimer" element={<Disclaimer />} />
             <Route path="/admin" element={<AdminDashboard />} />
@@ -59,7 +59,7 @@ function App() {
             <Route path="/lemon-bottle" element={<LemonBottleForm />} />
             <Route path="/iv-therapy" element={<IVTherapyConsultationForm />} />
             <Route path="/lemon-bottle" element={<LemonBottleForm />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/admin" replace />} />
           </>
         ) : (
           <>
