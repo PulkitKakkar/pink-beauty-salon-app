@@ -6,6 +6,11 @@
       "src": "/src/assets/pink-logo.jpeg",
       "type": "image/png",
       "sizes": "192x192"
+    },
+    {
+      "src": "/src/assets/pink-logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
